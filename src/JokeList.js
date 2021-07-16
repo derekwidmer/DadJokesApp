@@ -30,33 +30,29 @@ class JokeList extends Component {
     }
 
     handleClick() {
-        window.localStorage.clear()
-        this.getJokes()
+        this.getJokes();
     }
 
     async getJokes() {
-        let count = 0;
         let jokes = [];
-        while (count < this.props.numJokes) {
+        while (jokes.length < this.props.numJokes) {
             let res = await axios.get("https://icanhazdadjoke.com/", { headers: { "Accept": "application/json" } })
             let joke = { joke: res.data.joke, id: res.data.id, votes: 0 };
             if (!this.state.jokes.includes(joke)) {
                 jokes.push(joke);
-                count++;
             }
         }
-        this.setState({ jokes: jokes })
-        window.localStorage.setItem(
-            "jokes",
-            JSON.stringify(jokes)
-        );
+        console.log("state jokes: ", this.state.jokes)
+        console.log("jokes in method: ", jokes)
+        this.setState(st => ({ jokes: [...st.jokes, ...jokes] }),
+            () => { window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes)) });
     }
     render() {
         return (
-            <div className="JokeList">
+            <div className="JokeList" >
                 <div className="JokeList-sidebar">
                     <h1 className="JokeList-title">Dad <span>Jokes</span></h1>
-                    <img src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg" />
+                    <img src="https://assets.dryicons.com/uploads/icon/svg/8927/0eb14c71-38f2-433a-bfc8-23d9c99b3647.svg" alt="" />
                     <button className="JokeList-getmore" onClick={this.handleClick} >New Jokes</button>
                 </div>
                 <div className="JokeList-jokes">
