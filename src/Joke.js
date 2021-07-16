@@ -42,9 +42,9 @@ class Joke extends Component {
         return (
             <div className="Joke">
                 <div className="Joke-buttons">
-                    <FontAwesomeIcon className="icon" icon={faArrowUp} onClick={this.props.upvote} />
+                    <FontAwesomeIcon className="icon icon-up" icon={faArrowUp} onClick={this.props.upvote} />
                     <span className="Joke-votes" style={{ borderColor: this.getColor() }}>{this.props.votes}</span>
-                    <FontAwesomeIcon className="icon" icon={faArrowDown} onClick={this.props.downvote} />
+                    <FontAwesomeIcon className="icon icon-down" icon={faArrowDown} onClick={this.props.downvote} />
                 </div>
                 <div className="Joke-text">{this.props.joke}</div>
                 <div className="Joke-smiley">
