@@ -4,6 +4,7 @@ import Joke from './Joke'
 import './JokeList.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLaugh } from '@fortawesome/free-regular-svg-icons'
+import { v4 as uuid } from 'uuid';
 
 class JokeList extends Component {
     static defaultProps = {
@@ -16,6 +17,7 @@ class JokeList extends Component {
             jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]"),
             loading: false
         };
+        this.seenJokes = new Set(this.state.jokes.map(j => j.joke));
         this.handleClick = this.handleClick.bind(this)
     }
     componentDidMount() {
@@ -40,13 +42,12 @@ class JokeList extends Component {
         let jokes = [];
         while (jokes.length < this.props.numJokes) {
             let res = await axios.get("https://icanhazdadjoke.com/", { headers: { "Accept": "application/json" } })
-            let joke = { joke: res.data.joke, id: res.data.id, votes: 0 };
-            if (!this.state.jokes.includes(joke)) {
-                jokes.push(joke);
+            if (!this.seenJokes.has(res.data.joke)) {
+                let newJoke = { joke: res.data.joke, id: uuid(), votes: 0 };
+                jokes.push(newJoke);
+                this.seenJokes.add(newJoke.joke);
             }
         }
-        console.log("state jokes: ", this.state.jokes)
-        console.log("jokes in method: ", jokes)
         this.setState(st => ({ jokes: [...st.jokes, ...jokes], loading: false }),
             () => { window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes)) });
     }
