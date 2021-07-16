@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import Joke from './Joke'
 import './JokeList.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLaugh } from '@fortawesome/free-regular-svg-icons'
 
 class JokeList extends Component {
     static defaultProps = {
@@ -11,7 +13,8 @@ class JokeList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]")
+            jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]"),
+            loading: false
         };
         this.handleClick = this.handleClick.bind(this)
     }
@@ -30,7 +33,7 @@ class JokeList extends Component {
     }
 
     handleClick() {
-        this.getJokes();
+        this.setState({ loading: true }, () => this.getJokes())
     }
 
     async getJokes() {
@@ -44,10 +47,18 @@ class JokeList extends Component {
         }
         console.log("state jokes: ", this.state.jokes)
         console.log("jokes in method: ", jokes)
-        this.setState(st => ({ jokes: [...st.jokes, ...jokes] }),
+        this.setState(st => ({ jokes: [...st.jokes, ...jokes], loading: false }),
             () => { window.localStorage.setItem("jokes", JSON.stringify(this.state.jokes)) });
     }
     render() {
+        if (this.state.loading) {
+            return (
+                <div className="JokeList-loader">
+                    <FontAwesomeIcon className="JokeList-loader-icon" icon={faLaugh} size="8x" spin />
+                    <h1 className="JokeList-title">Loading...</h1>
+                </div>
+            )
+        }
         return (
             <div className="JokeList" >
                 <div className="JokeList-sidebar">

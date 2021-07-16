@@ -56,3 +56,11 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+.JokeList-loader {
+    color: white;
+    text-align: center;
+}
+
+.JokeList-loader-icon {
+    color:white;
+}
